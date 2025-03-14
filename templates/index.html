@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Análise de Atletas</title>
+    <style>
+        /* Reset básico */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f7f7f7;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .container {
+            width: 80%;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 20px;
+        }
+
+        form {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        label {
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #34495e;
+        }
+
+        input[type="text"] {
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            transition: border-color 0.3s ease;
+        }
+
+        input[type="text"]:focus {
+            border-color: #3498db;
+            outline: none;
+        }
+
+        button {
+            grid-column: span 2;
+            padding: 12px;
+            font-size: 16px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #2980b9;
+        }
+
+        h2, h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+
+        .grafico {
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .grafico img {
+            width: 100%;
+            max-width: 600px;
+            border-radius: 10px;
+        }
+
+        ul {
+            list-style-type: none;
+            margin: 20px 0;
+            padding: 0;
+        }
+
+        li {
+            background-color: #ecf0f1;
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        strong {
+            color: #2980b9;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            font-size: 14px;
+            color: #7f8c8d;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Cadastro e Análise de Atletas</h1>
+
+        <form method="POST">
+            <label for="velocidade">Velocidade:</label>
+            <input type="text" id="velocidade" name="velocidade" required>
+
+            <label for="forca">Força:</label>
+            <input type="text" id="forca" name="forca" required>
+
+            <label for="resistencia">Resistência:</label>
+            <input type="text" id="resistencia" name="resistencia" required>
+
+            <button type="submit">Cadastrar Atleta</button>
+        </form>
+
+        {% if valores_usuario %}
+        <h2>Resultados para o atleta inserido:</h2>
+        <p>Velocidade: {{ valores_usuario.velocidade }}</p>
+        <p>Força: {{ valores_usuario.forca }}</p>
+        <p>Resistência: {{ valores_usuario.resistencia }}</p>
+
+        <h3>Resultado do Modelo K-Means:</h3>
+        <p>Você foi alocado ao <strong>Grupo {{ grupo_kmeans }}</strong> no modelo K-Means!</p>
+
+        <h3>Resultado da Regressão Linear:</h3>
+        <p>Com os dados inseridos, o modelo previu que o atleta pertence ao <strong>Grupo {{ grupo_kmeans }}</strong>.</p>
+
+        <h3>Fórmula da Regressão Linear:</h3>
+        <p>{{ formula_regressao }}</p>
+        {% endif %}
+
+        <h2>Gráficos</h2>
+
+        <div class="grafico">
+            <h3>Gráfico de K-Means (Não Supervisionado) com Destaque do Atleta</h3>
+            <img src="{{ url_for('static', filename='grafico_kmeans_com_usuario.png') }}" alt="Gráfico K-Means">
+            <p><strong>Explicação:</strong> Este gráfico mostra a distribuição dos atletas em três grupos (K-Means) com base nas características de velocidade e resistência. Os pontos são coloridos de acordo com os grupos aos quais pertencem. A linha vermelha mostra os centros dos grupos (centroides), que representam as médias das características dos atletas dentro de cada grupo. O ponto laranja é o atleta inserido, que é destacado no gráfico para mostrar sua alocação no grupo.</p>
+        </div>
+
+        <div class="grafico">
+            <h3>Gráfico de Regressão Linear (Supervisionado)</h3>
+            <img src="{{ url_for('static', filename='grafico_regressao.png') }}" alt="Gráfico Regressão Linear">
+            <p><strong>Explicação:</strong> O gráfico de regressão linear exibe a relação entre as variáveis preditoras (velocidade, força, resistência) e a alocação do grupo K-Means. A linha vermelha é a previsão gerada pelo modelo de regressão linear, enquanto os pontos azuis representam a alocação real dos atletas nos grupos. A regressão linear tenta capturar a tendência dos dados e fazer previsões sobre a classificação dos atletas.</p>
+        </div>
+
+        <h2>Explicação dos Grupos:</h2>
+        <ul>
+            <li><strong>Grupo 0:</strong> Atletas mais explosivos, com alta força e resistência.</li>
+            <li><strong>Grupo 1:</strong> Atletas com resistência moderada e força variada.</li>
+            <li><strong>Grupo 2:</strong> Atletas com baixa força, resistência e velocidade.</li>
+        </ul>
+    </div>
+</body>
+</html>
